@@ -1,36 +1,145 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# 蔵書検索アプリのテンプレート
 
-## Getting Started
+## 環境構築
 
-First, run the development server:
-
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+```sh
+npm i
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 開発サーバー立ち上げ
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+```sh
+npm run dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## このリポジトリの初期設定手順
 
-## Learn More
+### 1. `create-next-app`を使ってテンプレートを作成
 
-To learn more about Next.js, take a look at the following resources:
+```shell
+npx create-next-app
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+質問には以下のように回答。
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```shell
+What is your project named? > bootcamp-library-template
+Would you like to use TypeScript? > No
+Would you like to use ESLint? > Yes
+Would you like to use Tailwind CSS? > Yes
+Would you like your code inside a `src/` directory? > Yes
+Would you like to use App Router? (recommended) > Yes
+Would you like to use Turbopack for `next dev`? > No
+Would you like to customize the import alias (`@/*` by default)? > No
+```
 
-## Deploy on Vercel
+### 2. ESLintのルールを強化
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+以下のコマンドでパッケージのインストール。
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```sh
+npm i -D eslint-config-prettier eslint-plugin-sort-exports eslint-plugin-unused-imports prettier
+```
+
+また、以下のファイルを追加・編集
+
+- `.vscode/settings.json`
+- `eslint.config.mjs`
+
+`lint:fix`スクリプトを`package.json`に追加。
+
+```jsonc
+{
+  // ...(省略)
+  "scripts": {
+    // ...(省略)
+    "lint": "next lint", // ← コンマを書く
+    "lint:fix": "next lint --fix", // ← 追加
+  },
+  // ... (省略)
+}
+```
+
+### 3. js ファイルを jsx ファイルにリネーム
+
+```shell
+mv src/app/layout.js src/app/layout.jsx
+mv src/app/page.js src/app/page.jsx
+```
+
+### 4. daisyuiのインストール
+
+[参考サイト](https://daisyui.com/docs/install/nextjs/?lang=ja)
+
+パッケージのインストール
+
+```sh
+npm i tailwindcss @tailwindcss/postcss daisyui@latest
+```
+
+`src/app/globals.css`の編集
+
+```css
+@import "tailwindcss";
+@plugin "daisyui"; /* ← 追加 */
+```
+
+### 5. lucide-reactのインストール
+
+```sh
+npm i lucide-react
+```
+
+### 6. Prismaで本のデータベースを作成
+
+パッケージのインストール。
+
+```sh
+npm i @prisma/client
+npm i -D prisma fast-csv
+```
+
+以下のファイルを追加。
+
+- `prisma/schema.prisma`
+
+Prisma向けのスクリプトを`package.json`に追加。
+
+```jsonc
+{
+  // ...(省略)
+  "scripts": {
+    // ...(省略)
+    "lint": "next lint",
+    "lint:fix": "next lint --fix", // ← コンマを書く
+    "db:migrate": "npx prisma migrate dev", // 以降すべて追加
+    "db:seed": "node prisma/seed.mjs",
+    "db:reset": "npx prisma migrate reset --force",
+    "prisma:studio": "npx prisma studio",
+  },
+  // ... (省略)
+}
+```
+
+マイグレート(スキーマをDBに反映)する。
+
+```sh
+npm run db:migrate
+```
+
+マイグレーション名を聞かれたら`create book table`と答える。
+
+また、以下のファイルを追加。
+
+- `prisma/seed.mjs`
+
+[このページ](https://www.kaggle.com/datasets/saurabhbagchi/books-dataset)から`books.csv`をダウンロードしプロジェクトルートに配置する。
+その後、以下のコマンドを実行。
+
+```sh
+npm run db:seed
+```
+
+実行後は`books.csv`を削除する。
+
+### 7. `src`フォルダにページとAPIを追加
