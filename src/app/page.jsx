@@ -4,7 +4,8 @@ import Link from "next/link";
 export default async function Home() {
   const headersList = await headers();
   const host = headersList.get("host");
-  const res = await fetch(`http://${host}/api/books`);
+  const page = 1;
+  const res = await fetch(`http://${host}/api/books?page=${page}`);
   const books = await res.json();
   const sampleBook = books[0];
   return (
