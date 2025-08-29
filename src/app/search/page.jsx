@@ -1,3 +1,4 @@
+import { headers } from "next/headers";
 import Link from "next/link";
 
 export default async function Search() {
@@ -5,7 +6,9 @@ export default async function Search() {
     query: "Clara", // 検索したい文字列
     page: 1,
   });
-  const res = await fetch(`http://localhost:3000/api/books/search?${params}`);
+  const headersList = await headers();
+  const host = headersList.get("host");
+  const res = await fetch(`http://${host}/api/books/search?${params}`);
   const books = await res.json();
   const sampleBook = books[0];
   return (
