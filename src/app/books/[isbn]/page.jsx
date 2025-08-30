@@ -1,8 +1,11 @@
+import { headers } from "next/headers";
 import Link from "next/link";
 
 export default async function BookInfo({ params }) {
-  const { isbn } = params;
-  const res = await fetch(`http://localhost:3000/api/books/${isbn}`);
+  const { isbn } = await params;
+  const headersList = await headers();
+  const host = headersList.get("host");
+  const res = await fetch(`http://${host}/api/books/${isbn}`);
   const book = await res.json();
   return (
     <div className="hero bg-base-200 min-h-screen">

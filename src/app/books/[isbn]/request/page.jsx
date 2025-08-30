@@ -1,5 +1,5 @@
 export default async function Request({ params }) {
-  const { isbn } = params;
+  const { isbn } = await params;
   return (
     <div className="hero bg-base-200 min-h-screen">
       <div className="hero-content text-center">

@@ -17,6 +17,14 @@ export class BookRepository {
     return await prisma.book.findMany({ skip: (page - 1) * 20, take: 20 });
   }
 
+  static async listRecommended(isbn) {
+    return await prisma.book.findMany({
+      where: { isbn: { gt: isbn } },
+      take: 20,
+      orderBy: { isbn: "asc" },
+    });
+  }
+
   static async search(query, page = 1) {
     if (!(query && page >= 1)) {
       throw new Error("Invalid arguments");
