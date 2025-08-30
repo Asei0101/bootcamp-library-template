@@ -21,6 +21,7 @@ export default async function Home() {
             </Link>
             です。
           </p>
+          <div className="py-4 text-left"></div>
         </div>
       </div>
     </div>
