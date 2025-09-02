@@ -14,7 +14,7 @@ export class BookRepository {
   }
 
   static async list(page = 1) {
-    return await prisma.book.findMany({ skip: (page - 1) * 20, take: 20 });
+    return await prisma.book.findMany({ skip: (page - 1) * 20, take: 100 });
   }
 
   static async listRecommended(isbn) {
