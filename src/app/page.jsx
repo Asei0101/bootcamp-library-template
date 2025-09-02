@@ -25,7 +25,18 @@ export default async function Home() {
             </Link>
             です。
           </p>
-          <div className="py-4 text-left"></div>
+          <div className="py-4 text-left">
+            <h2 className="text-2xl font-bold">本の一覧</h2>
+            <ul className="list-disc list-inside">
+              {books.map((book) => (
+                <li key={book.isbn}>
+                  <Link href={`/books/${book.isbn}`} className="link">
+                    {book.title}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
       </div>
     </div>
